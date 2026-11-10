@@ -60,3 +60,31 @@ def test_parse_valid_dates(text, today, expected):
 def test_parse_invalid_dates(text):
     with pytest.raises(ValueError):
         parse(text, today=date(2025, 12, 3))
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("2025/12/04", date(2025, 12, 4)),
+        ("2025/02/03", date(2025, 2, 3)),
+        ("2024/02/29", date(2024, 2, 29)),
+        ("2026/01/01", date(2026, 1, 1)),
+        ("2025/12/31", date(2025, 12, 31)),
+    ],
+)
+def test_year_first_slash_dates(text, expected):
+    assert parse(text) == expected
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "2025/02/29",
+        "2025/13/01",
+        "2025/00/10",
+        "2025/12/32",
+    ],
+)
+def test_invalid_year_first_slash_dates(text):
+    with pytest.raises(ValueError):
+        parse(text)
